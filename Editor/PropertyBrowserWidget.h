@@ -29,18 +29,532 @@
 #define PROPERTY_CONTENT_MERGIN		2,2,8,2
 
 //////////////////////////////////////////////////////////////////////////fwd decl
-class CPropertyWidget;
-class CPropertyPageWidget;
+class CPropertyBoolWidget;
+class CPropertyCharWidget;
+class CPropertyUCharWidget;
+class CPropertyShortWidget;
+class CPropertyUShortWidget;
+class CPropertyIntWidget;
+class CPropertyUIntWidget;
+class CPropertyLongWidget;
+class CPropertyULongWidget;
+class CPropertyInt64Widget;
+class CPropertyUInt64Widget;
+class CPropertyFloatWidget;
+class CPropertyDoubleWidget;
+class CPropertyVec2Widget;
+class CPropertyColorWidget;
+class CPropertyCStrWidget;
+class CPropertyGameObjectWidget;
+class CPropertyComponentWidget;
+
 class CPropertyBrowserWidget;
 
 
-class CPropertyBoolWidget;
-class CPropertyIntWidget;
-class CPropertyFloatWidget;
-class CPropertyVec2Widget;
-class CPropertyColorWidget;
+
+//////////////////////////////////////////////////////////////////////////CPropertyBoolWidget
+class CPropertyBoolWidget : public QWidget
+{
+	Q_OBJECT
+private:
+	bool* m_var;
+
+private slots :
+		void slot_stateChanged(int i)
+		{
+			*m_var = (i == Qt::Checked);
+			CGame::EDTick();
+		}
+
+public:
+	CPropertyBoolWidget(bool* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto chb = new QCheckBox(this);
+		chb->setChecked(*varPtr);
+		layout->addWidget(chb);
+
+		connect(chb, SIGNAL(stateChanged(int)), this, SLOT(slot_stateChanged(int)));
+	}
+};
 
 
+//////////////////////////////////////////////////////////////////////////CPropertyCharWidget
+class CPropertyCharWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	char*		m_var;
+
+private slots :
+	void slot_ValChanged(int val) { *m_var = (char)val; CGame::EDTick(); }
+
+public:
+	CPropertyCharWidget(char* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto sb = new QSpinBox(this);
+		sb->setRange(CHAR_MIN, CHAR_MAX);
+		sb->setValue(*varPtr);
+		layout->addWidget(sb);
+
+		connect(sb, SIGNAL(valueChanged(int)), this, SLOT(slot_ValChanged(int)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyUCharWidget
+class CPropertyUCharWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	unsigned char*		m_var;
+
+	private slots :
+		void slot_ValChanged(int val) { *m_var = (unsigned char)val; CGame::EDTick(); }
+
+public:
+	CPropertyUCharWidget(unsigned char* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto sb = new QSpinBox(this);
+		sb->setRange(0, 0xFF);
+		sb->setValue(*varPtr);
+		layout->addWidget(sb);
+
+		connect(sb, SIGNAL(valueChanged(int)), this, SLOT(slot_ValChanged(int)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyShortWidget
+class CPropertyShortWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	short*		m_var;
+
+private slots :
+		void slot_ValChanged(int val) { *m_var = (short)val; CGame::EDTick(); }
+
+public:
+	CPropertyShortWidget(short* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto sb = new QSpinBox(this);
+		sb->setRange(-32768, 32767);
+		sb->setValue(*varPtr);
+		layout->addWidget(sb);
+
+		connect(sb, SIGNAL(valueChanged(int)), this, SLOT(slot_ValChanged(int)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyUShortWidget
+class CPropertyUShortWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	unsigned short*		m_var;
+
+	private slots :
+		void slot_ValChanged(int val) { *m_var = (unsigned short)val; CGame::EDTick(); }
+
+public:
+	CPropertyUShortWidget(unsigned short* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto sb = new QSpinBox(this);
+		sb->setRange(0, 0xFFFF);
+		sb->setValue(*varPtr);
+		layout->addWidget(sb);
+
+		connect(sb, SIGNAL(valueChanged(int)), this, SLOT(slot_ValChanged(int)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyIntWidget
+class CPropertyIntWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	int*		m_var;
+
+	private slots :
+		void slot_ValChanged(int val) { *m_var = val; CGame::EDTick(); }
+
+public:
+	CPropertyIntWidget(int* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto sb = new QSpinBox(this);
+		sb->setRange(INT_MIN, INT_MAX);
+		sb->setValue(*varPtr);
+		layout->addWidget(sb);
+
+		connect(sb, SIGNAL(valueChanged(int)), this,  SLOT(slot_ValChanged(int)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyUIntWidget
+class CPropertyUIntWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	unsigned int*		m_var;
+
+	private slots :
+		void slot_ValChanged(int val) { *m_var = (unsigned int)val; CGame::EDTick(); }
+
+public:
+	CPropertyUIntWidget(unsigned int* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto sb = new QSpinBox(this);
+		sb->setRange(0, INT_MAX);
+		sb->setValue(*varPtr);
+		layout->addWidget(sb);
+
+		connect(sb, SIGNAL(valueChanged(int)), this,  SLOT(slot_ValChanged(int)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyLongWidget
+class CPropertyLongWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	long*		m_var;
+
+	private slots :
+		void slot_ValChanged(int val) { *m_var = (long)val; CGame::EDTick(); }
+
+public:
+	CPropertyLongWidget(long* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto sb = new QSpinBox(this);
+		sb->setRange(INT_MIN, INT_MAX);
+		sb->setValue(*varPtr);
+		layout->addWidget(sb);
+
+		connect(sb, SIGNAL(valueChanged(int)), this,  SLOT(slot_ValChanged(int)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyULongWidget
+class CPropertyULongWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	unsigned long*		m_var;
+
+	private slots :
+		void slot_ValChanged(int val) { *m_var = (unsigned long)val; CGame::EDTick(); }
+
+public:
+	CPropertyULongWidget(unsigned long* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto sb = new QSpinBox(this);
+		sb->setRange(0, INT_MAX);
+		sb->setValue(*varPtr);
+		layout->addWidget(sb);
+
+		connect(sb, SIGNAL(valueChanged(int)), this,  SLOT(slot_ValChanged(int)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyInt64Widget
+class CPropertyInt64Widget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	long long*		m_var;
+
+	private slots :
+		void slot_ValChanged(int val) { *m_var = (long long)val; CGame::EDTick(); }
+
+public:
+	CPropertyInt64Widget(long long* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		//@Replace Int64SpinBox
+		auto sb = new QSpinBox(this);
+		sb->setRange(INT_MIN, INT_MAX);
+		sb->setValue(*varPtr);
+		layout->addWidget(sb);
+
+		connect(sb, SIGNAL(valueChanged(int)), this,  SLOT(slot_ValChanged(int)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyInt64Widget
+class CPropertyUInt64Widget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	unsigned long long*		m_var;
+
+	private slots :
+		void slot_ValChanged(int val) { *m_var = (unsigned long long)val; CGame::EDTick(); }
+
+public:
+	CPropertyUInt64Widget(unsigned long long* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		//@Replace Int64SpinBox
+		auto sb = new QSpinBox(this);
+		sb->setRange(0, INT_MAX);
+		sb->setValue(*varPtr);
+		layout->addWidget(sb);
+
+		connect(sb, SIGNAL(valueChanged(int)), this,  SLOT(slot_ValChanged(int)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyFloatWidget
+class CPropertyFloatWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	float*				m_var;
+
+	private slots :
+		void slot_ValChanged(double val) { *m_var = (float)val; CGame::EDTick(); }
+
+public:
+	CPropertyFloatWidget(float* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto dsb = new QDoubleSpinBox(this);
+		dsb->setRange(-999999, 999999);
+		dsb->setValue(*varPtr);
+		layout->addWidget(dsb);
+
+		connect(dsb, SIGNAL(valueChanged(double)), this,  SLOT(slot_ValChanged(double)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyDoubleWidget
+class CPropertyDoubleWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	double*				m_var;
+
+private slots :
+		void slot_ValChanged(double val) { *m_var = val; CGame::EDTick(); }
+
+public:
+	CPropertyDoubleWidget(double* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto dsb = new QDoubleSpinBox(this);
+		dsb->setRange(-999999999, 999999999);
+		dsb->setValue(*varPtr);
+		layout->addWidget(dsb);
+
+		connect(dsb, SIGNAL(valueChanged(double)), this,  SLOT(slot_ValChanged(double)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyVec2Widget
+class CPropertyVec2Widget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	SVec2*				m_var;
+
+	private slots :
+		void slot_ValXChanged(double val) { m_var->x = val; CGame::EDTick(); }
+		void slot_ValYChanged(double val) { m_var->y = val; CGame::EDTick(); }
+
+public:
+	CPropertyVec2Widget(SVec2* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto dsbX = new QDoubleSpinBox(this);
+		dsbX->setRange(-99999, 99999);
+		dsbX->setValue(varPtr->x);
+		dsbX->setToolTip("X");
+		layout->addWidget(dsbX);
+
+
+		auto dsbY = new QDoubleSpinBox(this);
+		dsbY->setRange(-99999, 99999);
+		dsbY->setValue(varPtr->y);
+		dsbY->setToolTip("Y");
+		layout->addWidget(dsbY);
+
+		connect(dsbX, SIGNAL(valueChanged(double)), this, SLOT(slot_ValXChanged(double)));
+		connect(dsbY, SIGNAL(valueChanged(double)), this, SLOT(slot_ValYChanged(double)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyColorWidget
+class CPropertyColorWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	SColor*			m_var;
+
+	private slots :
+		void slot_ValRChanged(double val) { m_var->r = val; CGame::EDTick(); }
+		void slot_ValGChanged(double val) { m_var->g = val; CGame::EDTick(); }
+		void slot_ValBChanged(double val) { m_var->b = val; CGame::EDTick(); }
+
+public:
+	CPropertyColorWidget(SColor* varPtr)
+	{
+		m_var = varPtr;
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		auto dsbR = new QDoubleSpinBox(this);
+		dsbR->setRange(0.0, 1.0);
+		dsbR->setSingleStep(0.01);
+		dsbR->setDecimals(3);
+		dsbR->setValue(varPtr->r);
+		dsbR->setToolTip("R");
+		layout->addWidget(dsbR);
+
+
+		auto dsbG = new QDoubleSpinBox(this);
+		dsbG->setRange(0.0, 1.0);
+		dsbG->setSingleStep(0.01);
+		dsbG->setValue(varPtr->g);
+		dsbG->setDecimals(3);
+		dsbG->setToolTip("G");
+		layout->addWidget(dsbG);
+
+		auto dsbB = new QDoubleSpinBox(this);
+		dsbB->setRange(0.0, 1.0);
+		dsbB->setSingleStep(0.01);
+		dsbB->setValue(varPtr->b);
+		dsbB->setDecimals(3);
+		dsbB->setToolTip("B");
+		layout->addWidget(dsbB);
+
+		connect(dsbR, SIGNAL(valueChanged(double)), this, SLOT(slot_ValRChanged(double)));
+		connect(dsbG, SIGNAL(valueChanged(double)), this, SLOT(slot_ValGChanged(double)));
+		connect(dsbB, SIGNAL(valueChanged(double)), this, SLOT(slot_ValBChanged(double)));
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyCStrWidget
 class CPropertyCStrWidget : public QWidget
 {
 	Q_OBJECT
@@ -96,199 +610,13 @@ SEC1:
 	}
 };
 
-class CPropertyBoolWidget : public QWidget
-{
-	Q_OBJECT
-private:
-	bool* m_var;
-
-private slots :
-	void slot_stateChanged(int i)
-	{
-		*m_var = (i == Qt::Checked);
-		CGame::EDTick();
-	}
-
-public:
-	CPropertyBoolWidget(bool* varPtr)
-	{
-		m_var = varPtr;
-		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
-		QHBoxLayout* layout = new QHBoxLayout(this);
-		layout->setSpacing(4);
-		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
-
-		auto chb = new QCheckBox(this);
-		chb->setChecked(*varPtr);
-		layout->addWidget(chb);
-
-		connect(chb, SIGNAL(stateChanged(int)), this, SLOT(slot_stateChanged(int)));
-	}
-};
-
-class CPropertyIntWidget : public QWidget
-{
-	Q_OBJECT
-
-private:
-	int*		m_var;
-
-private slots :
-	void slot_ValChanged(int val) { *m_var = val; CGame::EDTick(); }
-
-public:
-	CPropertyIntWidget(int* varPtr)
-	{
-		m_var = varPtr;
-		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
-
-		QHBoxLayout* layout = new QHBoxLayout(this);
-		layout->setSpacing(4);
-		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
-
-		auto sb = new QSpinBox(this);
-		sb->setRange(INT_MIN, INT_MIN);
-		sb->setValue(*varPtr);
-		layout->addWidget(sb);
-		
-		connect(sb, SIGNAL(valueChanged(int)), this,  SLOT(slot_ValChanged(int)));
-	}
-};
-class CPropertyFloatWidget : public QWidget
-{
-	Q_OBJECT
-
-private:
-	float*				m_var;
-
-private slots :
-	void slot_ValChanged(double val) { *m_var = val; CGame::EDTick(); }
-
-public:
-	CPropertyFloatWidget(float* varPtr)
-	{
-		m_var = varPtr;
-		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
-		
-		QHBoxLayout* layout = new QHBoxLayout(this);
-		layout->setSpacing(4);
-		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
-
-		auto dsb = new QDoubleSpinBox(this);
-		dsb->setRange(-99999, 99999);
-		dsb->setValue(*varPtr);
-		layout->addWidget(dsb);
-
-		connect(dsb, SIGNAL(valueChanged(double)), this,  SLOT(slot_ValChanged(double)));
-	}
-};
-
-class CPropertyVec2Widget : public QWidget
-{
-	Q_OBJECT
-
-private:
-	SVec2*				m_var;
-
-private slots :
-	void slot_ValXChanged(double val) { m_var->x = val; CGame::EDTick(); }
-	void slot_ValYChanged(double val) { m_var->y = val; CGame::EDTick(); }
-
-public:
-	CPropertyVec2Widget(SVec2* varPtr)
-	{
-		m_var = varPtr;
-		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
-
-		QHBoxLayout* layout = new QHBoxLayout(this);
-		layout->setSpacing(4);
-		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
-		
-		auto dsbX = new QDoubleSpinBox(this);
-		dsbX->setRange(-99999, 99999);
-		dsbX->setValue(varPtr->x);
-		dsbX->setToolTip("X");
-		layout->addWidget(dsbX);
 
 
-		auto dsbY = new QDoubleSpinBox(this);
-		dsbY->setRange(-99999, 99999);
-		dsbY->setValue(varPtr->y);
-		dsbY->setToolTip("Y");
-		layout->addWidget(dsbY);
-
-		connect(dsbX, SIGNAL(valueChanged(double)), this, SLOT(slot_ValXChanged(double)));
-		connect(dsbY, SIGNAL(valueChanged(double)), this, SLOT(slot_ValYChanged(double)));
-	}
-};
-
-class CPropertyColorWidget : public QWidget
-{
-	Q_OBJECT
-
-private:
-	SColor*			m_var;
-
-private slots :
-		void slot_ValRChanged(double val) { m_var->r = val; CGame::EDTick(); }
-		void slot_ValGChanged(double val) { m_var->g = val; CGame::EDTick(); }
-		void slot_ValBChanged(double val) { m_var->b = val; CGame::EDTick(); }
-
-public:
-	CPropertyColorWidget(SColor* varPtr)
-	{
-		m_var = varPtr;
-		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
-
-		QHBoxLayout* layout = new QHBoxLayout(this);
-		layout->setSpacing(4);
-		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
-
-		auto dsbR = new QDoubleSpinBox(this);
-		dsbR->setRange(0.0, 1.0);
-		dsbR->setSingleStep(0.01);
-		dsbR->setDecimals(3);
-		dsbR->setValue(varPtr->r);
-		dsbR->setToolTip("R");
-		layout->addWidget(dsbR);
 
 
-		auto dsbG = new QDoubleSpinBox(this);
-		dsbG->setRange(0.0, 1.0);
-		dsbG->setSingleStep(0.01);
-		dsbG->setValue(varPtr->g);
-		dsbG->setDecimals(3);
-		dsbG->setToolTip("G");
-		layout->addWidget(dsbG);
-
-		auto dsbB = new QDoubleSpinBox(this);
-		dsbB->setRange(0.0, 1.0);
-		dsbB->setSingleStep(0.01);
-		dsbB->setValue(varPtr->b);
-		dsbB->setDecimals(3);
-		dsbB->setToolTip("B");
-		layout->addWidget(dsbB);
-
-		connect(dsbR, SIGNAL(valueChanged(double)), this, SLOT(slot_ValRChanged(double)));
-		connect(dsbG, SIGNAL(valueChanged(double)), this, SLOT(slot_ValGChanged(double)));
-		connect(dsbB, SIGNAL(valueChanged(double)), this, SLOT(slot_ValBChanged(double)));
-	}
-};
 
 
-class CPropertyPageWidget : public QWidget
-{
-	Q_OBJECT
-
-	QVector<CPropertyWidget*> properties;
-
-	CPropertyIntWidget* addPropertyInt()
-	{
-
-	}
-};
-
-
+//////////////////////////////////////////////////////////////////////////CPropertyBrowserWidget
 class CPropertyBrowserWidget : public QTreeView
 {
 	Q_OBJECT
@@ -296,7 +624,6 @@ class CPropertyBrowserWidget : public QTreeView
 public:
 	QStandardItemModel*				m_model;
 	CGameObject*					m_attechedObj;
-	QVector<CPropertyPageWidget*>	m_pages;
 	QStandardItem*					m_curItem;
 	int								m_curGroupIndex;
 	int								m_curPropertyIndex;

@@ -17,9 +17,14 @@
 
 
 
+// #define COMPONENT_REG_VAR(Var)	{ #Var, offsetof(_Class_, Var ), sizeof(_ClassIns->##Var)				\
+// 	, typeid(decltype(_ClassIns->##Var)).name()	, StrHash(typeid(decltype(_ClassIns->##Var)).name())	\
+// 	, _DetectType(typeid(decltype(_ClassIns->##Var)).hash_code()) }, 
+// 
+
 #define COMPONENT_REG_VAR(Var)	{ #Var, offsetof(_Class_, Var ), sizeof(_ClassIns->##Var)				\
 	, typeid(decltype(_ClassIns->##Var)).name()	, StrHash(typeid(decltype(_ClassIns->##Var)).name())	\
-	, _DetectType(typeid(decltype(_ClassIns->##Var)).hash_code()) }, 
+	, _DetectType(StrHash(typeid(decltype(_ClassIns->##Var)).name())) }, 
 
 
 
@@ -46,63 +51,21 @@ class CComponent;
 enum EComponentVarType
 {
 	EVT_UNKNOW, EVT_BOOL, EVT_CHAR, EVT_UCHAR, EVT_SHORT, EVT_USHORT, EVT_INT, EVT_UINT,
-	EVT_FLOAT, EVT_DOUBLE, EVT_VEC2, EVT_COLOR, EVT_CSTR, EVT_COMPONENTPTR, EVT_GAMEOBJECTPTR
+	EVT_LONG, EVT_ULONG, EVT_INT64, EVT_UINT64 ,EVT_FLOAT, EVT_DOUBLE, EVT_VEC2, EVT_COLOR,
+	EVT_CSTR, EVT_COMPONENTPTR, EVT_GAMEOBJECTPTR
 };
 
-inline size_t GetSizeOfComponentVar(EComponentVarType cvt)
-{
-	const size_t sizes[] = 
-	{
-		0, sizeof(bool), sizeof(char), sizeof(unsigned char), sizeof(short), sizeof(unsigned short),
-		sizeof(int), sizeof(unsigned int), sizeof(float), sizeof(double), sizeof(SVec2), sizeof(SColor),
-		sizeof(cstr), sizeof(CComponent*), sizeof(CGameObject*)
-	};
 
-	return sizes[cvt];
-}
 
-inline EComponentVarType _DetectType(size_t typehash)
-{
-	static const size_t _bool = typeid(bool).hash_code();
-	static const size_t _char = typeid(char).hash_code();
-	static const size_t _uchar = typeid(unsigned char).hash_code();
-	static const size_t _short = typeid(short).hash_code();
-	static const size_t _ushort = typeid(unsigned short).hash_code();
-	static const size_t _int = typeid(int).hash_code();
-	static const size_t _uint = typeid(unsigned int).hash_code();
-	static const size_t _float = typeid(float).hash_code();
-	static const size_t _double = typeid(double).hash_code();
-	static const size_t _vec2 = typeid(SVec2).hash_code();
-	static const size_t _color = typeid(SColor).hash_code();
-	static const size_t _cstr = typeid(cstr).hash_code();
-	static const size_t _componentPtr = typeid(CComponent*).hash_code();
-	static const size_t _gameObjPtr = typeid(CGameObject*).hash_code();
-
-	if(typehash == _bool) { return EComponentVarType::EVT_BOOL; }
-	if(typehash == _char) { return EComponentVarType::EVT_CHAR; }
-	if(typehash == _uchar) { return EComponentVarType::EVT_UCHAR; }
-	if(typehash == _short) { return EComponentVarType::EVT_SHORT; }
-	if(typehash == _ushort) { return EComponentVarType::EVT_USHORT; }
-	if(typehash == _int) { return EComponentVarType::EVT_INT; }
-	if(typehash == _uint) { return EComponentVarType::EVT_UINT; }
-	if(typehash == _float) { return EComponentVarType::EVT_FLOAT; }
-	if(typehash == _double) { return EComponentVarType::EVT_DOUBLE; }
-	if(typehash == _vec2) { return EComponentVarType::EVT_VEC2; }
-	if(typehash == _color) { return EComponentVarType::EVT_COLOR; }
-	if(typehash == _cstr) { return EComponentVarType::EVT_CSTR; }
-	if(typehash == _componentPtr) { return EComponentVarType::EVT_COMPONENTPTR; }
-	if(typehash == _gameObjPtr) { return EComponentVarType::EVT_GAMEOBJECTPTR; }
-
-	return EComponentVarType::EVT_UNKNOW;
-}
+ENGINEDECL EComponentVarType _DetectType(uint typehash);
 
 struct SComponentVarInfo
 {
-	cstr			varName;
-	uint			varOffset;
-	uint			typeSize;
-	cstr			typeName;
-	uint			typeNameHash;
+	cstr					varName;
+	uint					varOffset;
+	uint					typeSize;
+	cstr					typeName;
+	uint					typeNameHash;
 	EComponentVarType		type;
 };
 

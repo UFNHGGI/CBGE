@@ -5,8 +5,12 @@
 #include <math.h>
 
 typedef const char* cstr;
+typedef unsigned char uchar;
+typedef unsigned short ushort;
 typedef unsigned int uint;
-
+typedef unsigned long ulong;
+typedef long long int64;
+typedef unsigned long long uint64;
 
 inline uint StrHash(cstr str)
 {

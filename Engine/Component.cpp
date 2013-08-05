@@ -164,3 +164,47 @@ CComponent* CComponent::getNext() const
 	}
 	return nullptr;
 }
+
+EComponentVarType _DetectType( uint typehash )
+{
+	static const uint _bool				= StrHash(typeid(bool).name());
+	static const uint _char				= StrHash(typeid(char).name());
+	static const uint _uchar			= StrHash(typeid(unsigned char).name());
+	static const uint _short			= StrHash(typeid(short).name());
+	static const uint _ushort			= StrHash(typeid(unsigned short).name());
+	static const uint _int				= StrHash(typeid(int).name());
+	static const uint _uint				= StrHash(typeid(unsigned int).name());
+	static const uint _long				= StrHash(typeid(long).name());
+	static const uint _ulong			= StrHash(typeid(unsigned long).name());
+	static const uint _int64_			= StrHash(typeid(long long).name());
+	static const uint _uint64_			= StrHash(typeid(unsigned long long).name());
+	static const uint _float			= StrHash(typeid(float).name());
+	static const uint _double			= StrHash(typeid(double).name());
+	static const uint _vec2				= StrHash(typeid(SVec2).name());
+	static const uint _color			= StrHash(typeid(SColor).name());
+	static const uint _cstr				= StrHash(typeid(cstr).name());
+	static const uint _componentPtr		= StrHash(typeid(CComponent*).name());
+	static const uint _gameObjPtr		= StrHash(typeid(CGameObject*).name());
+
+
+	if(typehash == _bool)			{ return EComponentVarType::EVT_BOOL;			}
+	if(typehash == _char)			{ return EComponentVarType::EVT_CHAR;			}
+	if(typehash == _uchar)			{ return EComponentVarType::EVT_UCHAR;			}
+	if(typehash == _short)			{ return EComponentVarType::EVT_SHORT;			}
+	if(typehash == _ushort)			{ return EComponentVarType::EVT_USHORT;			}
+	if(typehash == _int)			{ return EComponentVarType::EVT_INT;			}
+	if(typehash == _uint)			{ return EComponentVarType::EVT_UINT;			}
+	if(typehash == _long)			{ return EComponentVarType::EVT_LONG;			}
+	if(typehash == _ulong)			{ return EComponentVarType::EVT_ULONG;			}
+	if(typehash == _int64_)			{ return EComponentVarType::EVT_INT64;			}
+	if(typehash == _uint64_)		{ return EComponentVarType::EVT_UINT64;			}
+	if(typehash == _float)			{ return EComponentVarType::EVT_FLOAT;			}
+	if(typehash == _double)			{ return EComponentVarType::EVT_DOUBLE;			}
+	if(typehash == _vec2)			{ return EComponentVarType::EVT_VEC2;			}
+	if(typehash == _color)			{ return EComponentVarType::EVT_COLOR;			}
+	if(typehash == _cstr)			{ return EComponentVarType::EVT_CSTR;			}
+	if(typehash == _componentPtr)	{ return EComponentVarType::EVT_COMPONENTPTR;	}
+	if(typehash == _gameObjPtr)		{ return EComponentVarType::EVT_GAMEOBJECTPTR;	}
+
+	return EComponentVarType::EVT_UNKNOW;
+}

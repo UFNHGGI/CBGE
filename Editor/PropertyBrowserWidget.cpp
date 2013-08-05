@@ -91,17 +91,53 @@ void CPropertyBrowserWidget::addProperty( cstr name, EComponentVarType varType, 
 		itemVarName->setToolTip("bool");
 		setIndexWidget(itemVarWidget->index(), new CPropertyBoolWidget((bool*)varAddress));
 		break;
-	case  EVT_CSTR:
-		itemVarName->setToolTip("cstr");
-		setIndexWidget(itemVarWidget->index(), new CPropertyCStrWidget((cstr*)varAddress));
+	case EVT_CHAR:
+		itemVarName->setToolTip("char");
+		setIndexWidget(itemVarWidget->index(), new CPropertyCharWidget((char*)varAddress));
+		break;
+	case EVT_UCHAR:
+		itemVarName->setToolTip("unsigned char");
+		setIndexWidget(itemVarWidget->index(), new CPropertyUCharWidget((unsigned char*)varAddress));
+		break;
+	case EVT_SHORT:
+		itemVarName->setToolTip("short");
+		setIndexWidget(itemVarWidget->index(), new CPropertyShortWidget((short*)varAddress));
+		break;
+	case EVT_USHORT:
+		itemVarName->setToolTip("unsigned short");
+		setIndexWidget(itemVarWidget->index(), new CPropertyUShortWidget((unsigned short*)varAddress));
 		break;
 	case  EVT_INT:
 		itemVarName->setToolTip("int");
 		setIndexWidget(itemVarWidget->index(), new CPropertyIntWidget((int*)varAddress));
 		break;
+	case  EVT_UINT:
+		itemVarName->setToolTip("unsigned int");
+		setIndexWidget(itemVarWidget->index(), new CPropertyUIntWidget((unsigned int*)varAddress));
+		break;
+	case  EVT_LONG:
+		itemVarName->setToolTip("long");
+		setIndexWidget(itemVarWidget->index(), new CPropertyLongWidget((long*)varAddress));
+		break;
+	case  EVT_ULONG:
+		itemVarName->setToolTip("unsigned long");
+		setIndexWidget(itemVarWidget->index(), new CPropertyULongWidget((unsigned long*)varAddress));
+		break;
+	case  EVT_INT64:
+		itemVarName->setToolTip("int64");
+		setIndexWidget(itemVarWidget->index(), new CPropertyInt64Widget((long long*)varAddress));
+		break;
+	case  EVT_UINT64:
+		itemVarName->setToolTip("uint64");
+		setIndexWidget(itemVarWidget->index(), new CPropertyUInt64Widget((unsigned long long*)varAddress));
+		break;
 	case  EVT_FLOAT:
 		itemVarName->setToolTip("float");
 		setIndexWidget(itemVarWidget->index(), new CPropertyFloatWidget((float*)varAddress));
+		break;
+	case  EVT_DOUBLE:
+		itemVarName->setToolTip("double");
+		setIndexWidget(itemVarWidget->index(), new CPropertyDoubleWidget((double*)varAddress));
 		break;
 	case  EVT_VEC2:
 		itemVarName->setToolTip("SVec2");
@@ -110,6 +146,10 @@ void CPropertyBrowserWidget::addProperty( cstr name, EComponentVarType varType, 
 	case  EVT_COLOR:
 		itemVarName->setToolTip("SColor");
 		setIndexWidget(itemVarWidget->index(), new CPropertyColorWidget((SColor*)varAddress));
+		break;
+	case  EVT_CSTR:
+		itemVarName->setToolTip("cstr");
+		setIndexWidget(itemVarWidget->index(), new CPropertyCStrWidget((cstr*)varAddress));
 		break;
 	}
 }

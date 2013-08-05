@@ -78,6 +78,7 @@
     <ClCompile Include="AnimateColor.cpp" />
     <ClCompile Include="FreeMove.cpp" />
     <ClCompile Include="RotateAround.cpp" />
+    <ClCompile Include="Test1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimateColor.h" />
