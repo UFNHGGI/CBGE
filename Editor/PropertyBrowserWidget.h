@@ -18,6 +18,10 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QMenu>
 #include <QtGui/QAction>
+#include <QtGui/QToolButton>
+#include <QtGui/QCommandLinkButton>
+#include <QtGui/QListWidget>
+#include <QtGui/QTreeWidget>
 #include <QVector>
 
 #include <Engine.h>
@@ -560,7 +564,7 @@ class CPropertyCStrWidget : public QWidget
 	Q_OBJECT
 
 private:
-	static QVector<char*> Strs;
+	static QVector<char*> AllocatedStrs;
 
 	cstr*	m_var;
 	char*	strBuff;
@@ -586,7 +590,7 @@ public:
 		if(*varPtr)
 		{
 			le->setText(*varPtr);
-			for(auto iter = Strs.begin(); iter != Strs.end(); iter++)
+			for(auto iter = AllocatedStrs.begin(); iter != AllocatedStrs.end(); iter++)
 			{
 				if(*iter == *varPtr)
 				{
@@ -600,7 +604,7 @@ public:
 
 		strBuff = new char[64];
 		strBuff[0] = '\0';
-		Strs.push_back(strBuff);
+		AllocatedStrs.push_back(strBuff);
 
 SEC1:
 		*m_var = strBuff;
@@ -611,7 +615,176 @@ SEC1:
 };
 
 
+//////////////////////////////////////////////////////////////////////////CPropertyGameObjectWidget
+class CPropertyGameObjectWidget : public QWidget
+{
+	Q_OBJECT
 
+private:
+	CGameObject**			m_var;
+	QCommandLinkButton*		m_btn;
+
+	static QListWidget*		TargetSelectionList;
+	
+
+private slots :
+		void slot_pressed()
+		{
+			if(TargetSelectionList == nullptr)
+			{
+				TargetSelectionList = new QListWidget;
+				TargetSelectionList->setWindowTitle("Select Object");
+				TargetSelectionList->setWindowOpacity(0.95f);
+			}
+
+			TargetSelectionList->clear();
+			TargetSelectionList->disconnect(this);
+			connect(TargetSelectionList, SIGNAL(itemClicked ( QListWidgetItem * ))
+				, this, SLOT(slot_selectionListItemClicked(QListWidgetItem*)));
+
+			auto obj = CGame::GetObjByIndex(0);
+			while(obj)
+			{
+				TargetSelectionList->addItem(obj->name);
+				obj = obj->getNext();
+			}
+			TargetSelectionList->show();
+
+		}
+
+		void slot_selectionListItemClicked ( QListWidgetItem * item )
+		{
+			m_btn->setText(item->text());
+			*m_var = CGame::GetObjByIndex(item->listWidget()->currentRow());
+			item->listWidget()->close();
+		}
+
+public:
+	CPropertyGameObjectWidget(CGameObject** varPtr)
+	{
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		m_btn = new QCommandLinkButton(this);
+		layout->addWidget(m_btn);
+		connect(m_btn, SIGNAL(pressed()), this, SLOT(slot_pressed()));
+
+		m_var = varPtr;
+		if(CGameObject::Exist(*varPtr))
+		{
+			m_btn->setText((*varPtr)->name);
+		}
+		else
+		{
+			*m_var = nullptr;
+			m_btn->setText("null");
+		}
+	}
+};
+
+
+//////////////////////////////////////////////////////////////////////////CPropertyComponentWidget
+class CPropertyComponentWidget : public QWidget
+{
+	Q_OBJECT
+
+private:
+	CComponent**			m_var;
+	QCommandLinkButton*		m_btn;
+
+	static QTreeWidget*		TargetSelectionList;
+
+private slots:
+		void slot_pressed()
+		{
+			if(TargetSelectionList == nullptr)
+			{
+				TargetSelectionList = new QTreeWidget;
+				TargetSelectionList->setWindowTitle("Select Component");
+				TargetSelectionList->setWindowOpacity(0.95f);
+				TargetSelectionList->setHeaderHidden(true);
+			}
+			
+			TargetSelectionList->clear();
+			TargetSelectionList->disconnect(this);
+			connect(TargetSelectionList, SIGNAL(itemClicked(QTreeWidgetItem*, int))
+				, this, SLOT(slot_selectionListItemClicked (QTreeWidgetItem*, int)));
+
+			/////////////////fill widget
+			CGameObject* obj = CGame::GetObjByIndex(0);
+			while(obj)
+			{
+				CComponent* comp = obj->getComponentByIndex(0);
+				QTreeWidgetItem* item = new QTreeWidgetItem();
+				item->setText(0,obj->name);
+				item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsUserCheckable);
+				TargetSelectionList->addTopLevelItem(item);
+
+				while(comp)
+				{
+					QTreeWidgetItem* childItem = new QTreeWidgetItem();
+					childItem->setText(0,comp->info()->className());
+					item->addChild(childItem);
+					comp = comp->getNext();
+				}
+				obj = obj->getNext();
+			}
+
+
+			TargetSelectionList->expandAll();
+			TargetSelectionList->show();
+		}
+
+		void slot_selectionListItemClicked ( QTreeWidgetItem * item, int column )
+		{
+			QModelIndex curIndex = item->treeWidget()->currentIndex();
+			if(curIndex.parent().isValid()) //component selected?
+			{
+				CComponent* comp = CGame::GetObjByIndex(curIndex.parent().row())->getComponentByIndex(curIndex.row());
+				static QString Text;
+				Text.clear();
+				Text = comp->owner()->name;
+				Text += "   ";
+				Text += comp->info()->className();
+				m_btn->setText(Text);
+				*m_var = comp;
+				item->treeWidget()->close();
+			}
+		}
+
+public:
+	CPropertyComponentWidget(CComponent** varPtr)
+	{
+		this->setMinimumSize(PROPERTY_MIN_WIDTH, PROPERTY_MIN_HEIGHT);
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->setSpacing(4);
+		layout->setContentsMargins(PROPERTY_CONTENT_MERGIN);
+
+		m_btn = new QCommandLinkButton(this);
+		layout->addWidget(m_btn);
+		connect(m_btn, SIGNAL(pressed()), this, SLOT(slot_pressed()));
+
+		m_var = varPtr;
+		if(CComponent::Exist(*varPtr))
+		{
+			m_var = varPtr;
+			static QString Text;
+			Text.clear();
+			Text = (*m_var)->owner()->name;
+			Text += "   ";
+			Text += (*m_var)->info()->className();
+			m_btn->setText(Text);
+			
+		}
+		else
+		{
+			*m_var = nullptr;
+			m_btn->setText("null");
+		}
+	}
+};
 
 
 
@@ -632,30 +805,7 @@ private slots:
 	void slot_MenuRequested(const QPoint& p);
 
 public:
-	CPropertyBrowserWidget(QWidget* parent)
-		: QTreeView(parent)
-	{
-		
-		m_curItem = nullptr;
-		m_curGroupIndex = 0;
-		m_curPropertyIndex = 0;
-
-		m_model = new QStandardItemModel();
-		m_model->setColumnCount(2);
-		m_model->setHeaderData(0, Qt::Horizontal, "");
-		m_model->setHeaderData(1, Qt::Horizontal, "");
-		this->setModel(m_model);
-		this->header()->setMovable(false);
-
-		this->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
-		this->connect(this, SIGNAL(customContextMenuRequested(const QPoint&))
-			, this, SLOT(slot_MenuRequested(const QPoint&)));
-	}
-
-	~CPropertyBrowserWidget(void)
-	{
-
-	}
+	CPropertyBrowserWidget(QWidget* parent);
 
 
 	void clearProperties();

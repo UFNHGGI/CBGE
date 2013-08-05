@@ -15,7 +15,7 @@ private:
 	static CGameObject*		_AddObjectRaw();
 	static void				_InitVarAfterGameLoad(CGameObject** ppObj, int index);
 	static void				_InitVarAfterGameLoad(CComponent** ppCom, int objIndex, int compIndex);
-	static void				_DeleteAfterGameLoad(void* ptr);
+	static void				_DeletePreGameLoad(void* ptr);
 	static void				_Release();
 
 public:
@@ -54,7 +54,6 @@ public:
 	static bool								Load(cstr fileName);
 	static bool								IsEditor();
 	static CGameObject*						GetObjByIndex(uint index);
-
 };
 
 #endif	//__GAME_H__

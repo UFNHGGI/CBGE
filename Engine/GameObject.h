@@ -52,18 +52,9 @@ public:
 	uint			componentCount();
 
 
+	static bool Exist(const CGameObject* obj);
 
-// 	CGameObject* next()
-// 	{
-// 		CGameObject* obj = _next;
-// 		while(obj)
-// 		{
-// 			if(obj->_alive)
-// 				return obj;
-// 			obj = obj->_next;
-// 		}
-// 		return obj;
-// 	}
+
 	CComponent*				addComponent(const CComponentClassInfo* inf);
 	CComponent*				getComponent(const CComponentClassInfo* inf);
 	CComponent*				addComponent(uint typeHash);

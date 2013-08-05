@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <map>
 
+
 #define COMPONENT_REG_BEGIN(Class)										\
 	public:																\
 	static const CComponentClassInfo* RegClass() {						\
@@ -17,10 +18,6 @@
 
 
 
-// #define COMPONENT_REG_VAR(Var)	{ #Var, offsetof(_Class_, Var ), sizeof(_ClassIns->##Var)				\
-// 	, typeid(decltype(_ClassIns->##Var)).name()	, StrHash(typeid(decltype(_ClassIns->##Var)).name())	\
-// 	, _DetectType(typeid(decltype(_ClassIns->##Var)).hash_code()) }, 
-// 
 
 #define COMPONENT_REG_VAR(Var)	{ #Var, offsetof(_Class_, Var ), sizeof(_ClassIns->##Var)				\
 	, typeid(decltype(_ClassIns->##Var)).name()	, StrHash(typeid(decltype(_ClassIns->##Var)).name())	\
@@ -124,6 +121,7 @@ public:
 
 
 	
+	static bool Exist(const CComponent* c);
 
 	CGameObject*				owner() const					{ return _owner;											}
 	const CComponentClassInfo*	info() const					{ return _info;												}

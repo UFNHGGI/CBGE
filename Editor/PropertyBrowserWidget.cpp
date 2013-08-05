@@ -2,9 +2,10 @@
 
 #include "editor.h"
 
-QVector<char*> CPropertyCStrWidget::Strs;
+QVector<char*>		CPropertyCStrWidget::AllocatedStrs;
 
-
+QListWidget*		CPropertyGameObjectWidget::TargetSelectionList	= nullptr;
+QTreeWidget*		CPropertyComponentWidget::TargetSelectionList	= nullptr;
 
 
 void CPropertyBrowserWidget::slot_MenuRequested( const QPoint& p )
@@ -151,5 +152,31 @@ void CPropertyBrowserWidget::addProperty( cstr name, EComponentVarType varType, 
 		itemVarName->setToolTip("cstr");
 		setIndexWidget(itemVarWidget->index(), new CPropertyCStrWidget((cstr*)varAddress));
 		break;
+	case EVT_GAMEOBJECTPTR:
+		itemVarName->setToolTip("CGameObject*");
+		setIndexWidget(itemVarWidget->index(), new CPropertyGameObjectWidget((CGameObject**)varAddress));
+		break;
+	case EVT_COMPONENTPTR:
+		itemVarName->setToolTip("CComponent*");
+		setIndexWidget(itemVarWidget->index(), new CPropertyComponentWidget((CComponent**)varAddress));
+		break;
 	}
+}
+
+CPropertyBrowserWidget::CPropertyBrowserWidget( QWidget* parent ) : QTreeView(parent)
+{
+	m_curItem = nullptr;
+	m_curGroupIndex = 0;
+	m_curPropertyIndex = 0;
+
+	m_model = new QStandardItemModel();
+	m_model->setColumnCount(2);
+	m_model->setHeaderData(0, Qt::Horizontal, "");
+	m_model->setHeaderData(1, Qt::Horizontal, "");
+	this->setModel(m_model);
+	this->header()->setMovable(false);
+
+	this->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+	this->connect(this, SIGNAL(customContextMenuRequested(const QPoint&))
+		, this, SLOT(slot_MenuRequested(const QPoint&)));
 }

@@ -13,6 +13,8 @@ public:
 	{
 		CGame::EDInit(this->getDC());
 		CGame::EDTick();
+		CGame::LoadDlls();
+		CGame::Dbg_PrinComponentClass();
 
 		setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
 		connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(slot_menuRequest(const QPoint&)));

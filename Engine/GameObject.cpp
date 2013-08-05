@@ -287,6 +287,24 @@ CGameObject* CGameObject::getNext() const
 	return nullptr;
 }
 
+bool CGameObject::Exist( const CGameObject* obj )
+{
+	//Game.cpp
+	extern CGameObject* Game_FirstObj;
+
+	if(obj)
+	{
+		auto iter = Game_FirstObj;
+		while(iter)
+		{
+			if(iter == obj)
+				return obj->_alive;
+			iter = iter->_next;
+		}
+	}
+	return false;
+}
+
 
 
 

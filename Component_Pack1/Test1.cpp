@@ -46,6 +46,25 @@ class CTestVars : public CComponent
 	{
 		memset(&var_bool, 0, sizeof(CTestVars) - offsetof(CTestVars, var_bool));
 	}
+	void onUpdate()
+	{
+		std::cout << var_bool << '\n';
+		std::cout << var_char << '\n';
+		std::cout << var_uchar << '\n';
+		std::cout << var_short << '\n';
+		std::cout << var_ushort << '\n';
+		std::cout << var_int << '\n';
+		std::cout << var_uint << '\n';
+		std::cout << var_long << '\n';
+		std::cout << var_ulong << '\n';
+		std::cout << var_int64 << '\n';
+		std::cout << var_uint64 << '\n';
+		std::cout << var_float << '\n';
+		std::cout << var_str << '\n';
+		std::cout << var_gameobjectPtr << '\n';
+		std::cout << var_componentPtr << '\n';
+		owner()->destroy();
+	}
 };
 
 COMPONENT_IMPL(CTestVars);

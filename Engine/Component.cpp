@@ -10,21 +10,6 @@ bool CComponent::_writeToFile( FILE* file )
 		const SComponentVarInfo& var = _info->getVarInfo(i);
 		switch(var.type)
 		{
-		case EVT_UNKNOW:
-		case EVT_BOOL:
-		case EVT_CHAR:
-		case EVT_UCHAR:
-		case EVT_SHORT:
-		case EVT_USHORT:
-		case EVT_INT:
-		case EVT_UINT:
-		case EVT_FLOAT:
-		case EVT_DOUBLE:
-		case EVT_VEC2:
-		case EVT_COLOR:
-			fwrite(getVarAddress(i), var.typeSize, 1, file);
-			break;
-
 		case EVT_CSTR:
 			{
 				short strLen = 0;
@@ -46,7 +31,7 @@ bool CComponent::_writeToFile( FILE* file )
 			{
 				int index = -1;
 				CGameObject** pObj = (CGameObject**)getVarAddress(i);
-				if((*pObj) && (*pObj)->_alive)
+				if(CGameObject::Exist(*pObj))
 					index = (*pObj)->getIndex();
 				fwrite(&index, sizeof(index), 1, file);	//write index of object
 			}
@@ -56,7 +41,7 @@ bool CComponent::_writeToFile( FILE* file )
 			{
 				int inds[2] = {-1, -1};
 				CComponent** pCom = (CComponent**)getVarAddress(i);
-				if((*pCom) && (*pCom)->_alive)
+				if(CComponent::Exist(*pCom))
 				{
 					inds[0] = (*pCom)->owner()->getIndex();
 					inds[1] = (*pCom)->getIndex();
@@ -68,6 +53,10 @@ bool CComponent::_writeToFile( FILE* file )
 				}
 				break;
 			}
+
+		default:
+			fwrite(getVarAddress(i), var.typeSize, 1, file);
+			break;
 		}
 		
 	}
@@ -82,21 +71,6 @@ bool CComponent::_readFromFile( FILE* file )
 		const SComponentVarInfo& var = _info->getVarInfo(i);
 		switch(var.type)
 		{
-		case EVT_UNKNOW:
-		case EVT_BOOL:
-		case EVT_CHAR:
-		case EVT_UCHAR:
-		case EVT_SHORT:
-		case EVT_USHORT:
-		case EVT_INT:
-		case EVT_UINT:
-		case EVT_FLOAT:
-		case EVT_DOUBLE:
-		case EVT_VEC2:
-		case EVT_COLOR:
-			fread(getVarAddress(i), var.typeSize, 1, file);
-			break;
-
 		case EVT_CSTR:
 			{
 				short strLen = 0;
@@ -104,13 +78,13 @@ bool CComponent::_readFromFile( FILE* file )
 				if(strLen)
 				{
 					char* str = new char[strLen+1];
-					CGame::_DeleteAfterGameLoad(str);
+					CGame::_DeletePreGameLoad(str);
 					fread(str, strLen, 1, file);
 					str[strLen] = '\0';
 					*((cstr*)getVarAddress(i)) = str;
 				}
 				else
-					*((cstr*)getVarAddress(i)) = nullptr;
+					*((cstr*)getVarAddress(i)) = "";
 			}
 			break;
 
@@ -128,6 +102,10 @@ bool CComponent::_readFromFile( FILE* file )
 				fread(inds, sizeof(inds), 1, file);
 				CGame::_InitVarAfterGameLoad((CComponent**)getVarAddress(i), inds[0], inds[1]);
 			}
+			break;
+
+		default:
+			fread(getVarAddress(i), var.typeSize, 1, file);
 			break;
 		}
 	}
@@ -163,6 +141,24 @@ CComponent* CComponent::getNext() const
 		c = c->_next;
 	}
 	return nullptr;
+}
+
+bool CComponent::Exist( const CComponent* c )
+{
+	if(c)
+	{
+		if(CGameObject::Exist(c->_owner))
+		{
+			auto iter = c->_owner->_componentHead;
+			while(iter)
+			{
+				if(iter == c)
+					return c->_alive;
+				iter = iter->_next;
+			}
+		}
+	}
+	return false;
 }
 
 EComponentVarType _DetectType( uint typehash )

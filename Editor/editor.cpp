@@ -22,8 +22,6 @@ Editor::Editor(QWidget *parent, Qt::WFlags flags)
 	connect(ui.widgetListObj, SIGNAL(itemChanged ( QListWidgetItem *))
 		, this, SLOT(slot_objList_ItemChanged(QListWidgetItem*)));
 
-
-	CGame::LoadDlls();
 }
 
 Editor::~Editor()
@@ -101,8 +99,24 @@ SEC1:
 
 void Editor::slot_objList_ItemChanged( QListWidgetItem* item )
 {
+	static QVector<char*> AllocatedStrs;
+	const uint MAX_STR_LENGTH = 64;
+
 	CGameObject* obj = CGame::GetObjByIndex(Instance->ui.widgetListObj->currentRow());
-	obj->name = item->text().toAscii().data();
+
+	for(auto itr = AllocatedStrs.begin(); itr != AllocatedStrs.end(); itr++)
+	{
+		if(*itr == obj->name)
+		{
+			strcpy((char*)obj->name, item->text().toAscii().data());
+			return;
+		}
+	}
+
+	char* str  = new char[MAX_STR_LENGTH];
+	strcpy(str, item->text().toAscii().data());
+	AllocatedStrs.push_back(str);
+	obj->name = str;
 }
 
 

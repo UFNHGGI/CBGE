@@ -14,7 +14,6 @@ uint					Game_WndH	= 600;
 CGameObject*			Game_FirstObj					= nullptr;
 CGameObject*			Game_LastObj					= nullptr;
 CComponentClassInfo*	Game_ComponentInfoHead			= nullptr;
-bool					Game_Initi						= false;
 bool					Game_Run						= false;
 bool					Game_UpdateEngine				= true;
 bool					Game_DoUpdateObj				= true;
@@ -29,6 +28,7 @@ bool					Game_IsEditor					= false;
 cstr					Game_CurLoadingDLLName			= "";
 int						Game_MouseX						= 0;
 int						Game_MouseY						= 0;
+
 std::list<HMODULE>		Game_DllList;
 
 
@@ -46,7 +46,10 @@ struct _SInitComponentAL
 
 std::list<_SInitObjAL>			Game_initObjAL;
 std::list<_SInitComponentAL>	Game_initComponentAL;
+
 std::list<void*>				Game_DeleleQueue;
+
+
 
 
 LRESULT WINAPI GameWNDProc(HWND wnd, UINT message, WPARAM wparam, LPARAM lparam)
@@ -202,6 +205,8 @@ void CGame::Init( uint w, uint h, cstr caption )
 
 void CGame::Run()
 {
+	Dbg_PrinComponentClass();
+
 	std::cout << "Game Run.\n";
 	ShowWindow(Game_HWND, SW_SHOW);
 	SetFocus(Game_HWND);
@@ -331,33 +336,11 @@ void CGame::_LoadGameIfNeed()
 	if(!Game_DoLoad)
 		return;
 
+	//delete pre load
 	auto iterDel = Game_DeleleQueue.cbegin();
 	for(;iterDel != Game_DeleleQueue.cend(); iterDel++)
 		delete *iterDel;
 	Game_DeleleQueue.clear();
-
-
-	for(auto iterInitObj = Game_initObjAL.cbegin(); iterInitObj != Game_initObjAL.cend(); iterInitObj++)
-		if((*iterInitObj).index != -1)
-			*(*iterInitObj).dst = CGame::GetObjByIndex((*iterInitObj).index);
-		else
-			*(*iterInitObj).dst = nullptr;
-	Game_initObjAL.clear();
-
-
-	for(auto iterInitCom = Game_initComponentAL.cbegin(); iterInitCom != Game_initComponentAL.cend(); iterInitCom++)
-		if((*iterInitCom).ObjIndex != -1 && (*iterInitCom).ComponentIndex != -1)
-		{
-			CGameObject* obj =  CGame::GetObjByIndex((*iterInitCom).ObjIndex);
-			if(obj)
-				*(*iterInitCom).dst = obj->getComponentByIndex((*iterInitCom).ComponentIndex);
-			else
-				*(*iterInitCom).dst = nullptr;
-		}
-		else
-			*(*iterInitCom).dst = nullptr;
-	Game_initComponentAL.clear();
-
 
 
 
@@ -374,6 +357,30 @@ void CGame::_LoadGameIfNeed()
 			break;
 	}
 	fclose(file);
+
+
+
+	//init after load
+	for(auto iterInitObj = Game_initObjAL.cbegin(); iterInitObj != Game_initObjAL.cend(); iterInitObj++)
+		if((*iterInitObj).index != -1)
+			*(*iterInitObj).dst = CGame::GetObjByIndex((*iterInitObj).index);
+		else
+			*(*iterInitObj).dst = nullptr;
+	Game_initObjAL.clear();
+
+	for(auto iterInitCom = Game_initComponentAL.cbegin(); iterInitCom != Game_initComponentAL.cend(); iterInitCom++)
+		if((*iterInitCom).ObjIndex != -1 && (*iterInitCom).ComponentIndex != -1)
+		{
+			CGameObject* obj =  CGame::GetObjByIndex((*iterInitCom).ObjIndex);
+			if(obj)
+				*(*iterInitCom).dst = obj->getComponentByIndex((*iterInitCom).ComponentIndex);
+			else
+				*(*iterInitCom).dst = nullptr;
+		}
+		else
+			*(*iterInitCom).dst = nullptr;
+	Game_initComponentAL.clear();
+
 
 
 	std::cout << "Game Loaded.\t" << Game_LoadFileName << '\n';
@@ -423,6 +430,7 @@ const CComponentClassInfo* CGame::RegComponentClass( cstr className, uint classS
 	return newCCI;
 }
 
+//render && delete objects
 void CGame::RenderObjects()
 {
 	CGameObject* obj = Game_FirstObj;
@@ -558,7 +566,7 @@ void CGame::_InitVarAfterGameLoad( CComponent** ppCom, int objIndex, int compInd
 	Game_initComponentAL.push_back(s);
 }
 
-void CGame::_DeleteAfterGameLoad( void* ptr )
+void CGame::_DeletePreGameLoad( void* ptr )
 {
 	Game_DeleleQueue.push_back(ptr);
 }
@@ -756,9 +764,6 @@ void CGame::LoadDlls()
 		{
 			std::cout << "\tLoaded." << '\n';
 			Game_DllList.push_back(lib);
-// 			void(*regComponent)() = (void(*)()) GetProcAddress(lib, "RegisterComponents");
-// 			if(regComponent)
-// 				regComponent();
 		}
 
 	} while (FindNextFile(file, &findData));
