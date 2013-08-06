@@ -76,7 +76,7 @@ public:
 	template < class T> T*	getComponent() 
 	{
 		static_assert(std::is_base_of<CComponent, T>::value, "T Must Be Derived From CComponent");
-		return (T*)addComponent(T::GetInfo());
+		return (T*)getComponent(T::GetInfo());
 
 	}
 };

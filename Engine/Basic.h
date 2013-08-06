@@ -4,6 +4,9 @@
 #include <iostream>
 #include <math.h>
 
+#define RAD2DEG		57.2957795f
+#define DEG2RAD		0.01745329f
+
 typedef const char* cstr;
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -47,8 +50,27 @@ struct SVec2
 	SVec2 operator - (const SVec2& v) const { return SVec2(x-v.x, y-v.y);	}
 	SVec2 operator * (float f) const		{ return SVec2(x*f, y*f);		}
 
-	float length() const	{ return sqrt(x*x + y*y); }
+	SVec2& operator += (const SVec2& v) { x += v.x;		y += v.y;	return *this; }
+	SVec2& operator -= (const SVec2& v) { x -= v.x;		y -= v.y;	return *this; }
 
+	float length() const	{ return sqrt(x*x + y*y);	}
+	float lengthSq() const  { return x*x + y*y;			}
+	float normalize()
+	{
+		float len = x*x + y*y;
+		if(len > 0.00001f)
+		{
+			len = sqrt(len);
+			x /= len;
+			y /= len;
+			return len;
+		}
+		else
+		{
+			x = y = 0.0f;
+			return 0.0f;
+		}
+	}
 	static SVec2 Lerp(const SVec2& a, const SVec2& b, float f)
 	{
 		return a + (b - a) * f;

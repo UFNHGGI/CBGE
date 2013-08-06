@@ -29,9 +29,9 @@ public:
 	static void			LoadGame(cstr filename);
 
 private slots:
-	void slot_objList_ItemClicked ( QListWidgetItem * item );
-	void slot_objList_MenuRequest(const QPoint& p);
-	void slot_objList_ItemChanged(QListWidgetItem* item);
+	void slot_ObjectList_ItemClicked( QListWidgetItem * item );
+	void slot_ObjectList_MenuRequest(const QPoint& p);
+	void slot_ObjectList_ItemChanged(QListWidgetItem* item);
 
 
 };

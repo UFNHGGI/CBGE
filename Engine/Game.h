@@ -40,7 +40,7 @@ public:
 	static const CComponentClassInfo*		GetComponentClass(uint typeHash);
 	static const CComponentClassInfo*		GetComponentClass(cstr className);
 	static const CComponentClassInfo*		RegComponentClass(cstr className, uint classSize
-		, SComponentVarInfo* vars, uint nVar, std::function<CComponent*()> funcNew);
+		, SComponentVarInfo* vars, uint nVar, std::function<CComponent*()> funcNew, bool showInEd);
 
 	static void Dbg_PrinComponentClass();
 

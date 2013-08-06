@@ -14,13 +14,13 @@ Editor::Editor(QWidget *parent, Qt::WFlags flags)
 	////////////////////////////////Object List
 	ui.widgetListObj->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
 	connect(ui.widgetListObj, SIGNAL(customContextMenuRequested(const QPoint&))
-		, this, SLOT(slot_objList_MenuRequest(const QPoint&)));
+		, this, SLOT(slot_ObjectList_MenuRequest(const QPoint&)));
 
 	connect(ui.widgetListObj, SIGNAL(itemClicked(QListWidgetItem *))
-		, this, SLOT(slot_objList_ItemClicked(QListWidgetItem*)));
+		, this, SLOT(slot_ObjectList_ItemClicked(QListWidgetItem*)));
 
 	connect(ui.widgetListObj, SIGNAL(itemChanged ( QListWidgetItem *))
-		, this, SLOT(slot_objList_ItemChanged(QListWidgetItem*)));
+		, this, SLOT(slot_ObjectList_ItemChanged(QListWidgetItem*)));
 
 }
 
@@ -33,12 +33,12 @@ Editor::~Editor()
 
 
 
-void Editor::slot_objList_ItemClicked( QListWidgetItem * item )
+void Editor::slot_ObjectList_ItemClicked( QListWidgetItem * item )
 {
 	SelectObj(CGame::GetObjByIndex(Instance->ui.widgetListObj->currentRow()));
 }
 
-void Editor::slot_objList_MenuRequest( const QPoint& p )
+void Editor::slot_ObjectList_MenuRequest( const QPoint& p )
 {
 	if(ui.widgetListObj->itemAt(p) == nullptr)
 		return;
@@ -54,7 +54,7 @@ void Editor::slot_objList_MenuRequest( const QPoint& p )
 
 		static QMenu*			menuAddComp = mainMenu.addMenu("Add Component");
 		static QVector<QMenu*>  listMenuCompPack;
-
+		
 		auto ci = CGame::GetComponentClassHead();
 		while(ci)
 		{
@@ -62,14 +62,18 @@ void Editor::slot_objList_MenuRequest( const QPoint& p )
 			{
 				if(ci->packName() == (*iter)->title())
 				{
-					(*iter)->addAction(ci->className());
+					if(ci->showInEd())
+						(*iter)->addAction(ci->className());
 					goto SEC1;
 				}
 			}
 
-			QMenu* newMenu = menuAddComp->addMenu(ci->packName());
-			newMenu->addAction(ci->className());
-			listMenuCompPack.push_back(newMenu);
+			if(ci->showInEd())
+			{
+				QMenu* newMenu = menuAddComp->addMenu(ci->packName());
+				newMenu->addAction(ci->className());
+				listMenuCompPack.push_back(newMenu);
+			}
 SEC1:
 			ci = ci->next();
 		}
@@ -97,7 +101,7 @@ SEC1:
 	}
 }
 
-void Editor::slot_objList_ItemChanged( QListWidgetItem* item )
+void Editor::slot_ObjectList_ItemChanged( QListWidgetItem* item )
 {
 	static QVector<char*> AllocatedStrs;
 	const uint MAX_STR_LENGTH = 64;

@@ -76,15 +76,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimateColor.cpp" />
+    <ClCompile Include="AnimateSize.cpp" />
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="EnemyControl.cpp" />
     <ClCompile Include="FreeMove.cpp" />
-    <ClCompile Include="RotateAround.cpp" />
-    <ClCompile Include="Test1.cpp" />
+    <ClCompile Include="PlayerControl.cpp" />
+    <ClCompile Include="RotateAroundPoint.cpp" />
+    <ClCompile Include="RotateAroundObject.cpp" />
+    <ClCompile Include="TowardObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimateColor.h" />
+    <ClInclude Include="AnimateSize.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="EnemyControl.h" />
     <ClInclude Include="CP1Basic.h" />
     <ClInclude Include="FreeMove.h" />
-    <ClInclude Include="RotateAround.h" />
+    <ClInclude Include="PlayerControl.h" />
+    <ClInclude Include="RotateAroundObject.h" />
+    <ClInclude Include="RotateAroundPoint.h" />
+    <ClInclude Include="TowardObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -205,7 +205,7 @@ void CGame::Init( uint w, uint h, cstr caption )
 
 void CGame::Run()
 {
-	Dbg_PrinComponentClass();
+// 	Dbg_PrinComponentClass();
 
 	std::cout << "Game Run.\n";
 	ShowWindow(Game_HWND, SW_SHOW);
@@ -415,7 +415,7 @@ const CComponentClassInfo* CGame::GetComponentClass( cstr className )
 
 
 const CComponentClassInfo* CGame::RegComponentClass( cstr className, uint classSize, SComponentVarInfo* vars 
-	, uint nVar, std::function<CComponent*()> funcNew )
+	, uint nVar, std::function<CComponent*()> funcNew, bool showInEd )
 {
 	CComponentClassInfo* newCCI	= new CComponentClassInfo;
 	newCCI->_next				= Game_ComponentInfoHead;
@@ -426,6 +426,7 @@ const CComponentClassInfo* CGame::RegComponentClass( cstr className, uint classS
 	newCCI->_vars				= vars;
 	newCCI->_varCount			= nVar;
 	newCCI->_getIns				= funcNew;
+	newCCI->_showInEd			= showInEd;
 	Game_ComponentInfoHead		= newCCI;
 	return newCCI;
 }

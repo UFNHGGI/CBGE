@@ -7,28 +7,30 @@
 #include <map>
 
 
-#define COMPONENT_REG_BEGIN(Class)										\
+#define COMPONENT_REG_BEGIN(Class, ShowInEd)							\
 	public:																\
 	static const CComponentClassInfo* RegClass() {						\
 		typedef Class _Class_;											\
 		static const char* _ClassName = #Class;							\
 		static const size_t _ClassHash = StrHash( #Class );				\
+		static const bool _ShowInEd = ShowInEd;							\
 		static const Class * _ClassIns = nullptr;						\
 		static SComponentVarInfo _Vars[] = {
 
 
 
 
-#define COMPONENT_REG_VAR(Var)	{ #Var, offsetof(_Class_, Var ), sizeof(_ClassIns->##Var)				\
+#define COMPONENT_REG_VAR(Var, ShowInEd)	{ #Var, offsetof(_Class_, Var ), sizeof(_ClassIns->##Var)	\
 	, typeid(decltype(_ClassIns->##Var)).name()	, StrHash(typeid(decltype(_ClassIns->##Var)).name())	\
-	, _DetectType(StrHash(typeid(decltype(_ClassIns->##Var)).name())) }, 
+	, _DetectType(StrHash(typeid(decltype(_ClassIns->##Var)).name())), ShowInEd }, 
 
 
 
 #define COMPONENT_REG_END()																				\
-		{ nullptr, 0, 0, nullptr, 0, EComponentVarType::EVT_UNKNOW }};									\
+		{ nullptr, 0, 0, nullptr, 0, EComponentVarType::EVT_UNKNOW, false }};							\
 		return CGame::RegComponentClass(_ClassName, sizeof(_Class_), _Vars								\
-		, sizeof(_Vars)/sizeof(SComponentVarInfo)-1, [](){ return (CComponent*)(new _Class_); });	}	\
+			, sizeof(_Vars)/sizeof(SComponentVarInfo)-1, [](){ return (CComponent*)(new _Class_); }		\
+			, _ShowInEd);	}																			\
 		private :																						\
 		static const CComponentClassInfo* INFO;															\
 		public :																						\
@@ -64,6 +66,7 @@ struct SComponentVarInfo
 	cstr					typeName;
 	uint					typeNameHash;
 	EComponentVarType		type;
+	bool					showInEd;
 };
 
 
@@ -84,6 +87,7 @@ private:
 	SComponentVarInfo*					_vars;
 	uint								_varCount;
 	std::function<CComponent*(void)>	_getIns;
+	bool								_showInEd;
 
 	CComponentClassInfo(){};
 	~CComponentClassInfo(){};
@@ -97,6 +101,7 @@ public:
 	uint						varCount() const				{ return _varCount;			}
 	const SComponentVarInfo&	getVarInfo(uint index) const	{ return _vars[index];		}
 	CComponent*					getNewInstance() const			{ return _getIns();			}
+	bool						showInEd() const				{ return _showInEd;			}
 };
 
 

@@ -45,7 +45,11 @@ void CPropertyBrowserWidget::attachObj( CGameObject* obj )
 	{
 		pushGroup(c->info()->className());
 		for(uint i = 0; i < c->info()->varCount(); i++)
-			addProperty(c->info()->getVarInfo(i).varName, c->info()->getVarInfo(i).type, c->getVarAddress(i));
+		{
+			const SComponentVarInfo& var = c->info()->getVarInfo(i);
+			if(var.showInEd)
+				addProperty(var.varName, var.type, c->getVarAddress(i));
+		}
 		popGroup();
 		c = c->getNext();
 	}
