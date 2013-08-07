@@ -24,6 +24,7 @@ public:
 		color2 = SColor(1) - color1; 
 		lerpSpeed = 0.01f;
 		lerpValue = 0.0f;
+
 	}
 	void onUpdate()
 	{

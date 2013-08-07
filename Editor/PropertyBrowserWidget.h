@@ -642,6 +642,7 @@ private slots :
 			connect(TargetSelectionList, SIGNAL(itemClicked ( QListWidgetItem * ))
 				, this, SLOT(slot_selectionListItemClicked(QListWidgetItem*)));
 
+			TargetSelectionList->addItem("null");
 			auto obj = CGame::GetObjByIndex(0);
 			while(obj)
 			{
@@ -654,8 +655,16 @@ private slots :
 
 		void slot_selectionListItemClicked ( QListWidgetItem * item )
 		{
-			m_btn->setText(item->text());
-			*m_var = CGame::GetObjByIndex(item->listWidget()->currentRow());
+			if(item->listWidget()->currentRow() == 0)
+			{
+				m_btn->setText("null");
+				*m_var = nullptr;
+			}
+			else	//null selected
+			{
+				m_btn->setText(item->text());
+				*m_var = CGame::GetObjByIndex(item->listWidget()->currentRow()-1);
+			}
 			item->listWidget()->close();
 		}
 
@@ -712,6 +721,12 @@ private slots:
 			connect(TargetSelectionList, SIGNAL(itemClicked(QTreeWidgetItem*, int))
 				, this, SLOT(slot_selectionListItemClicked (QTreeWidgetItem*, int)));
 
+
+			QTreeWidgetItem* itemNull = new QTreeWidgetItem();
+			itemNull->setText(0,"null");
+			TargetSelectionList->addTopLevelItem(itemNull);
+
+
 			/////////////////fill widget
 			CGameObject* obj = CGame::GetObjByIndex(0);
 			while(obj)
@@ -742,7 +757,7 @@ private slots:
 			QModelIndex curIndex = item->treeWidget()->currentIndex();
 			if(curIndex.parent().isValid()) //component selected?
 			{
-				CComponent* comp = CGame::GetObjByIndex(curIndex.parent().row())->getComponentByIndex(curIndex.row());
+				CComponent* comp = CGame::GetObjByIndex(curIndex.parent().row()-1)->getComponentByIndex(curIndex.row());
 				static QString Text;
 				Text.clear();
 				Text = comp->owner()->name;
@@ -750,6 +765,12 @@ private slots:
 				Text += comp->info()->className();
 				m_btn->setText(Text);
 				*m_var = comp;
+				item->treeWidget()->close();
+			}
+			else if(curIndex.row() == 0)	//null selected
+			{
+				m_btn->setText("null");
+				*m_var = nullptr;
 				item->treeWidget()->close();
 			}
 		}
