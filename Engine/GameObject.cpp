@@ -131,8 +131,6 @@ void CGameObject::_render() const
 
 	glBegin(GL_QUADS);
 
-	float sinRotation = sin(rotation);
-	float cosRotation = cos(rotation);
 	float sizeHalfX = size.x * 0.5f;
 	float sizeHalfY = size.y * 0.5f;
 
@@ -200,7 +198,7 @@ bool CGameObject::_readFromFile( FILE* file )
 	else
 	{
 		char* str = new char[nameLen+1];
-// 		CGame::_DeleteAfterGameLoad(str);
+ 		CGame::_DeletePreGameLoad(str);
 		fread(str, nameLen, 1, file);
 		str[nameLen] = '\0';
 		name = str;

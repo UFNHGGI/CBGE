@@ -13,6 +13,7 @@ Editor::Editor(QWidget *parent, Qt::WFlags flags)
 
 	////////////////////////////////Object List
 	ui.widgetListObj->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+
 	connect(ui.widgetListObj, SIGNAL(customContextMenuRequested(const QPoint&))
 		, this, SLOT(slot_ObjectList_MenuRequest(const QPoint&)));
 

@@ -7,6 +7,13 @@
 #define RAD2DEG		57.2957795f
 #define DEG2RAD		0.01745329f
 
+#ifdef ENGINE_BUILDDLL
+#define ENGINEDECL	__declspec(dllexport)
+#else
+#define ENGINEDECL	__declspec(dllimport)
+#endif
+
+
 typedef const char* cstr;
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -98,15 +105,5 @@ struct SColor
 		return a + (b - a) * f;
 	}
 };
-
-
-#ifdef ENGINE_BUILDDLL
-#define ENGINEDECL	__declspec(dllexport)
-#else
-#define ENGINEDECL	__declspec(dllimport)
-#endif
-
-#define DLLEXPORT	__declspec(dllexport)
-#define DLLIMPORT	__declspec(dllimport)
 
 #endif	//__BASIC_H__

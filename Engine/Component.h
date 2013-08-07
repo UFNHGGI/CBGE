@@ -7,22 +7,22 @@
 #include <map>
 
 
-#define COMPONENT_REG_BEGIN(Class, ShowInEd)							\
+#define COMPONENT_REG_BEGIN(Class, ShowInEditor)						\
 	public:																\
 	static const CComponentClassInfo* RegClass() {						\
 		typedef Class _Class_;											\
 		static const char* _ClassName = #Class;							\
 		static const size_t _ClassHash = StrHash( #Class );				\
-		static const bool _ShowInEd = ShowInEd;							\
+		static const bool _ShowInEd = ShowInEditor;						\
 		static const Class * _ClassIns = nullptr;						\
 		static SComponentVarInfo _Vars[] = {
 
 
 
 
-#define COMPONENT_REG_VAR(Var, ShowInEd)	{ #Var, offsetof(_Class_, Var ), sizeof(_ClassIns->##Var)	\
-	, typeid(decltype(_ClassIns->##Var)).name()	, StrHash(typeid(decltype(_ClassIns->##Var)).name())	\
-	, _DetectType(StrHash(typeid(decltype(_ClassIns->##Var)).name())), ShowInEd }, 
+#define COMPONENT_REG_VAR(Var, ShowInEditor)	{ #Var, offsetof(_Class_, Var ), sizeof(_ClassIns->##Var)	\
+	, typeid(decltype(_ClassIns->##Var)).name()	, StrHash(typeid(decltype(_ClassIns->##Var)).name())		\
+	, _DetectType(StrHash(typeid(decltype(_ClassIns->##Var)).name())), ShowInEditor }, 
 
 
 
@@ -37,7 +37,9 @@
 		static const CComponentClassInfo* GetInfo(){ return INFO; } 
 
 
+
 #define COMPONENT_IMPL(Class) const CComponentClassInfo* Class##::INFO = Class##::RegClass();
+
 
 
 //////////////////////////////////////////////////////////////////////////fwd decl
@@ -105,6 +107,7 @@ public:
 };
 
 
+
 class ENGINEDECL CComponent
 {
 	friend class CGame;
@@ -117,7 +120,6 @@ private:
 	bool						_alive;
 
 	bool _aliveActive() { return (*(short*)(&_alive)) == 0x101; }
-
 	bool _writeToFile(FILE* file);
 	bool _readFromFile(FILE* file);
 

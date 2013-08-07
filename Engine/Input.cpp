@@ -1,5 +1,6 @@
 #include "Input.h"
 
+/////////game.cpp
 extern bool		Game_KeysCur[256];
 extern bool		Game_KeysPre[256];
 extern bool		Game_MouseBtnCur[3];

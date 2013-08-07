@@ -205,8 +205,6 @@ void CGame::Init( uint w, uint h, cstr caption )
 
 void CGame::Run()
 {
-// 	Dbg_PrinComponentClass();
-
 	std::cout << "Game Run.\n";
 	ShowWindow(Game_HWND, SW_SHOW);
 	SetFocus(Game_HWND);
@@ -267,7 +265,7 @@ CGameObject* CGame::AddObject( cstr objName , float x, float y)
 {
 	CGameObject* newObj = _AddObjectRaw();
 	newObj->active = true;
-	newObj->name = objName ? objName : "";
+	newObj->name = objName ? objName : "Object";
 	newObj->position = SVec2(x,y);
 	newObj->size = SVec2(10, 10);
 	newObj->color = SColor(1,1,1);
@@ -336,7 +334,7 @@ void CGame::_LoadGameIfNeed()
 	if(!Game_DoLoad)
 		return;
 
-	//delete pre load
+	//delete pre load-----------
 	auto iterDel = Game_DeleleQueue.cbegin();
 	for(;iterDel != Game_DeleleQueue.cend(); iterDel++)
 		delete *iterDel;
@@ -344,7 +342,7 @@ void CGame::_LoadGameIfNeed()
 
 
 
-
+	//load game--------
 	FILE* file = fopen(Game_LoadFileName, "rb");
 	if(!file)
 		return;
@@ -360,7 +358,7 @@ void CGame::_LoadGameIfNeed()
 
 
 
-	//init after load
+	//init after load---------
 	for(auto iterInitObj = Game_initObjAL.cbegin(); iterInitObj != Game_initObjAL.cend(); iterInitObj++)
 		if((*iterInitObj).index != -1)
 			*(*iterInitObj).dst = CGame::GetObjByIndex((*iterInitObj).index);
@@ -388,12 +386,12 @@ void CGame::_LoadGameIfNeed()
 	Game_LoadFileName = nullptr;
 }
 
-const CComponentClassInfo* CGame::GetComponentClass( uint typeHash )
+const CComponentClassInfo* CGame::GetComponentClass( uint hash )
 {
 	CComponentClassInfo* cci = Game_ComponentInfoHead;
 	while(cci)
 	{
-		if(cci->_classNameHash == typeHash)
+		if(cci->_classNameHash == hash)
 			return cci;
 		cci = cci->_next;
 	}
@@ -699,30 +697,6 @@ int CGame::EDInit( HDC hdc )
 	return 0;
 }
 
-void CGame::EDRun()
-{
-	Game_Run = true;
-
-	while(Game_UpdateEngine)
-	{
-		memcpy(Game_KeysPre, Game_KeysCur, sizeof(Game_KeysCur));
-		memcpy(Game_MouseBtnPre, Game_MouseBtnCur, sizeof(Game_MouseBtnCur));
-
-		_ClearObjectsIfNeed();
-
-		UpdateObjects();
-
-		_ClearObjectsIfNeed();
-		_LoadGameIfNeed();
-
-		RenderObjects();
-
-		SwapBuffers(Game_HDC);
-		glClear(GL_COLOR_BUFFER_BIT);
-	}
-
-	_Release();
-}
 
 bool CGame::IsEditor()
 {

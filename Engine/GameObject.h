@@ -4,7 +4,6 @@
 #include "Component.h"
 #include <type_traits>
 
-#define GAMEOBJECT_NAME_LENGTH	32
 
 class ENGINEDECL CGameObject
 {
@@ -44,7 +43,7 @@ public:
 	float				rotation;
 	cstr				name;
 
-	//send message to components
+
 	void			sendMessage(uint message, void* data) const;
 	CGameObject*	getNext() const;
 	void			destroy();

@@ -30,14 +30,13 @@ public:
 	static void EDEvent(MSG* message);
 	static int  EDInit(HDC hdc);
 	static void EDTick();
-	static void EDRun();
 
 	static void LoadDlls();
 	static void FreeDlls();
 
 	static const CComponentClassInfo*		GetComponentClassHead();
 
-	static const CComponentClassInfo*		GetComponentClass(uint typeHash);
+	static const CComponentClassInfo*		GetComponentClass(uint hash);
 	static const CComponentClassInfo*		GetComponentClass(cstr className);
 	static const CComponentClassInfo*		RegComponentClass(cstr className, uint classSize
 		, SComponentVarInfo* vars, uint nVar, std::function<CComponent*()> funcNew, bool showInEd);
